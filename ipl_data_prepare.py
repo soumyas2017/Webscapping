@@ -3,6 +3,7 @@ from pathlib import Path
 import requests
 import re
 import csv
+# Method to write into csvfile
 def csv_write(row):
     ipl_data_file = Path("C:\\Users\\Soumya\\ipl_data.csv")
     if ipl_data_file.is_file():
