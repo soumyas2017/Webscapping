@@ -5,25 +5,27 @@ import re
 import csv
 # Method to write into csvfile
 def csv_write(row):
-    ipl_data_file = Path("C:\\Users\\Soumya\\ipl_data.csv")
+    csv_path = 'C:\\Users\\Soumya\\ipl_data.csv'
+    ipl_data_file = Path(csv_path)
     if ipl_data_file.is_file():
-        with open('C:\\Users\\Soumya\\ipl_data.csv', 'a') as csvFile:
+        with open(csv_path, 'a') as csvFile:
             writer = csv.writer(csvFile)
             writer.writerow(row)
         csvFile.close()
-    else:
-        pass
-
 if __name__ == '__main__':
     # url = "https://en.wikipedia.org/wiki/2008_Indian_Premier_League"
     # url = "https://en.wikipedia.org/wiki/2009_Indian_Premier_League"
+    # url = "https://en.wikipedia.org/wiki/2010_Indian_Premier_League"
+    url = "https://en.wikipedia.org/wiki/2013_Indian_Premier_League"
     # url = 'https://en.wikipedia.org/wiki/2017_Indian_Premier_League'
     # url = 'https://en.wikipedia.org/wiki/2018_Indian_Premier_League'
-    url = 'https://en.wikipedia.org/wiki/2012_Indian_Premier_League'
+    # url = 'https://en.wikipedia.org/wiki/2012_Indian_Premier_League'
+
     r = requests.get(url)
     data  = r.text
     soup = BeautifulSoup(data,'lxml')
     soup.prettify()
+    # Initialization
     data = list()
     urls = list()
     rr_list = list()
@@ -36,6 +38,10 @@ if __name__ == '__main__':
     row = list()
     c=0
     Match_data = dict()
+    # Writing Headers first
+    row = ['Field_umpire1','Field_umpire2','TV_umpire','Reserve_umpire','Referee','Match','Team1','Team2','Team1_score','Team1_overs','Team1_RR','Team2_score','Team2_overs','Team2_RR','Venue','Schedule','Result','Player_of_match','Player_of_match_team','Toss','Season']
+    csv_write(row)
+    row.clear()
     # Fetching Scorecard from above url
     for links in soup.find_all('a',text='Scorecard'):
         c +=1 # Just a counter for no of matches in a season
@@ -154,6 +160,9 @@ if __name__ == '__main__':
                         referee = match_referee.text
                         Match_data['Referee'] = referee
                         row.append(Match_data['Referee'])
+                if referee == '':
+                    # print(reserve_umpire)
+                    row.append('')
                         # Finding Overs and Run rate played by both teams
                 if (result != 'Match abandoned without a ball bowled') :
                     # print ("inn")
@@ -244,7 +253,7 @@ if __name__ == '__main__':
                         row.append(Match_data['Toss'])
                         Match_data['Season'] = season
                         row.append(Match_data['Season'])
-                        print(Match_data['Match'])
+                        # print(Match_data['Match'])
                         # Writes to file
                         csv_write(row)
                         # Re-initialization for consecutive loop, to remove cached data
@@ -254,6 +263,7 @@ if __name__ == '__main__':
                         player_of_match = ""
                         pom_team = ""
                         reserve_umpire=""
+                        referee = ""
         else:
             pass
     print (c) # Total Matches of the season
