@@ -5,15 +5,24 @@ import re
 import csv
 # Method to write into csvfile
 def csv_write(row):
-    csv_path = 'C:\\Users\\Soumya\\ipl_data.csv'
+    csv_path = 'C:\\Users\\Soumya\\ipl_data_2018.csv'
     ipl_data_file = Path(csv_path)
     if ipl_data_file.is_file():
         with open(csv_path, 'a') as csvFile:
             writer = csv.writer(csvFile)
             writer.writerow(row)
         csvFile.close()
+    else:
+        with open(csv_path, 'w') as data_file:
+            pass
+        data_file.close()
+        with open(csv_path, 'a') as csvFile:
+            writer = csv.writer(csvFile)
+            writer.writerow(row)
+        csvFile.close()
 if __name__ == '__main__':
     url = ["https://en.wikipedia.org/wiki/2008_Indian_Premier_League","https://en.wikipedia.org/wiki/2009_Indian_Premier_League","https://en.wikipedia.org/wiki/2010_Indian_Premier_League","https://en.wikipedia.org/wiki/2011_Indian_Premier_League","https://en.wikipedia.org/wiki/2012_Indian_Premier_League","https://en.wikipedia.org/wiki/2013_Indian_Premier_League","https://en.wikipedia.org/wiki/2014_Indian_Premier_League","https://en.wikipedia.org/wiki/2015_Indian_Premier_League","https://en.wikipedia.org/wiki/2016_Indian_Premier_League","https://en.wikipedia.org/wiki/2017_Indian_Premier_League","https://en.wikipedia.org/wiki/2018_Indian_Premier_League"]
+    # url = ["https://en.wikipedia.org/wiki/2016_Indian_Premier_League","https://en.wikipedia.org/wiki/2017_Indian_Premier_League","https://en.wikipedia.org/wiki/2018_Indian_Premier_League"]
     for i in range(0,len(url),1):
         r = requests.get(url[i])
         data  = r.text
@@ -33,9 +42,10 @@ if __name__ == '__main__':
         c=0
         Match_data = dict()
         # Writing Headers first
-        row = ['Field_umpire1','Field_umpire2','TV_umpire','Reserve_umpire','Referee','Match','Team1','Team2','Team1_score','Team1_overs','Team1_RR','Team2_score','Team2_overs','Team2_RR','Venue','Schedule','Result','Player_of_match','Player_of_match_team','Toss','Season']
-        csv_write(row)
-        row.clear()
+        if i == 0:
+            row = ['Field_umpire1','Field_umpire2','TV_umpire','Reserve_umpire','Referee','Match','Team1','Team2','Team1_score','Team1_overs','Team1_RR','Team2_score','Team2_overs','Team2_RR','Venue','Schedule','Result','Player_of_match','Player_of_match_team','Toss','Season']
+            csv_write(row)
+            row.clear()
         # Fetching Scorecard from above url
         for links in soup.find_all('a',text='Scorecard'):
             c +=1 # Just a counter for no of matches in a season
